@@ -18,3 +18,5 @@ conda activate neural-style-transfer
 ## Usage
 
 ## License
+neural-style-transfer is Copyright © 2019 Alexander Stante. It is free software, and may be redistributed under the 
+terms specified in the [LICENSE](/LICENSE) file.
