@@ -1,6 +1,5 @@
 from model import NeuralStyleTransfer
 import click
-import torch
 import tqdm
 import os
 from PIL import Image
