@@ -18,7 +18,7 @@ class NeuralStyleTransfer(nn.Module):
                   '28': 'conv5_1',
                   '21': 'conv4_2'}
         features = {}
-        for name, module in self.model.name_modules():
+        for name, module in self.model.named_children():
             x = module(x)
             if name in layers:
                 features[layers[name]] = x
