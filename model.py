@@ -11,4 +11,16 @@ class NeuralStyleTransfer(nn.Module):
             param.requires_grad_(False)
 
     def forward(self, x):
-        return self.model(x)
+        layers = {'0': 'conv1_1',
+                  '5': 'conv2_1',
+                  '10': 'conv3_1',
+                  '19': 'conv4_1',
+                  '28': 'conv5_1',
+                  '21': 'conv4_2'}
+        features = {}
+        for name, module in self.model.name_modules():
+            x = module(x)
+            if name in layers:
+                features[layers[name]] = x
+
+        return features
