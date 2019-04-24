@@ -23,6 +23,7 @@ def load_image(path):
     image = Image.open(path).convert('RGB')
     tensor = transform(image)
     tensor.unsqueeze_(0)
+    tensor.requires_grad_(True)
 
     return tensor
 
