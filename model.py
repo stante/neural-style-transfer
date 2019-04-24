@@ -10,6 +10,9 @@ class NeuralStyleTransfer(nn.Module):
         for param in self.model.parameters():
             param.requires_grad_(False)
 
+        self.content_layers = ['conv4_2']
+        self.style_layers = ['conv1_1', 'conv2_1', 'conv3_1', 'conv4_1', 'conv5_1']
+
     def forward(self, x):
         layers = {'0': 'conv1_1',
                   '5': 'conv2_1',
