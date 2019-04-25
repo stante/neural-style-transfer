@@ -17,6 +17,7 @@ import torchvision.transforms as transforms
 def main(epochs, alpha, beta, style_image, content_image, target_image):
     device = 'cpu'
     if torch.cuda.is_available:
+        print("Using cuda ", torch.cuda.current_device())
         device = 'cuda'
 
     model = NeuralStyleTransfer()
