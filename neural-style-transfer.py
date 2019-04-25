@@ -43,7 +43,7 @@ def main(epochs, alpha, beta, style_image, content_image, target_image):
 
     transform = transforms.ToPILImage()
     image = transform(target_tensor.squeeze())
-    image.save(target_image)
+    image.save(os.path.expanduser(target_image))
 
 
 def gram_matrix(tensor):
