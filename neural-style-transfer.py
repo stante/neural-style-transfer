@@ -15,10 +15,18 @@ import torchvision.transforms as transforms
 @click.argument('content-image')
 @click.argument('target-image')
 def main(epochs, alpha, beta, style_image, content_image, target_image):
+    device = 'cpu'
+    if torch.cuda.is_available:
+        device = 'cuda'
+
     model = NeuralStyleTransfer()
+    model.to(device)
     style_tensor = load_image(os.path.expanduser(style_image))
+    style_tensor.to(device)
     content_tensor = load_image(os.path.expanduser(content_image))
+    content_tensor.to(device)
     target_tensor = load_image(os.path.expanduser(target_image))
+    target_tensor.to(device)
     style_features = model.forward(style_tensor)
     content_features = model.forward(content_tensor)
 
