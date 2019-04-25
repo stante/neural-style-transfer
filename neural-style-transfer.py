@@ -9,10 +9,12 @@ import torchvision.transforms as transforms
 
 @click.command()
 @click.option('--epochs', default=2000, help='Number of epochs')
+@click.option('--alpha', default=1, help='Content weight')
+@click.option('--beta', default=1e6, help='Style weight')
 @click.argument('style-image')
 @click.argument('content-image')
 @click.argument('target-image')
-def main(epochs, style_image, content_image, target_image):
+def main(epochs, alpha, beta, style_image, content_image, target_image):
     model = NeuralStyleTransfer()
     style_tensor = load_image(os.path.expanduser(style_image))
     content_tensor = load_image(os.path.expanduser(content_image))
@@ -33,7 +35,7 @@ def main(epochs, style_image, content_image, target_image):
             # TODO: Optimize gram_matrix call for style_features
             style_loss += torch.mean((gram_matrix(target_features[layer]) - gram_matrix(style_features[layer]))**2)
 
-        total_loss = content_loss + style_loss
+        total_loss = alpha * content_loss + beta * style_loss
 
         optimizer.zero_grad()
         total_loss.backward(retain_graph=True)
