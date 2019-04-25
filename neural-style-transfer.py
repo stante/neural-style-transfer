@@ -41,6 +41,10 @@ def main(epochs, alpha, beta, style_image, content_image, target_image):
         total_loss.backward(retain_graph=True)
         optimizer.step()
 
+    transform = transforms.ToPILImage()
+    image = transform(target_tensor.squeeze())
+    image.save(target_image)
+
 
 def gram_matrix(tensor):
     matrix = tensor.view(tensor.size(1), -1)
