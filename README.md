@@ -15,6 +15,12 @@ line tool.
 $ conda activate neural-style-transfer
 ```
 
+If the conda environment already exists, it can be activated with the following command.
+
+```
+$ conda env update -f environment.yml
+```
+
 ## Usage
 ```sh
 Usage: neural-style-transfer.py [OPTIONS] STYLE_IMAGE CONTENT_IMAGE
