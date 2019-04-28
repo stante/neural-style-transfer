@@ -23,11 +23,10 @@ def main(epochs, alpha, beta, style_image, content_image, target_image):
     model = NeuralStyleTransfer()
     model.to(device)
     style_tensor = load_image(os.path.expanduser(style_image))
-    style_tensor.to(device)
+    style_tensor = style_tensor.to(device)
     content_tensor = load_image(os.path.expanduser(content_image))
-    content_tensor.to(device)
+    content_tensor = content_tensor.to(device)
     target_tensor = load_image(os.path.expanduser(target_image))
-    target_tensor.to(device)
     style_features = model.forward(style_tensor)
     content_features = model.forward(content_tensor)
 
@@ -51,7 +50,7 @@ def main(epochs, alpha, beta, style_image, content_image, target_image):
         optimizer.step()
 
     transform = transforms.ToPILImage()
-    image = transform(target_tensor.squeeze())
+    image = transform(target_tensor.squeeze().cpu())
     image.save(os.path.expanduser(target_image))
 
 
@@ -65,7 +64,7 @@ def load_image(path):
     image = Image.open(path).convert('RGB')
     tensor = transform(image)
     tensor.unsqueeze_(0)
-    tensor.requires_grad_(True)
+    tensor = tensor.to('cuda').requires_grad_(True)
 
     return tensor
 
