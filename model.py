@@ -12,6 +12,11 @@ class NeuralStyleTransfer(nn.Module):
 
         self.content_layers = ['conv4_2']
         self.style_layers = ['conv1_1', 'conv2_1', 'conv3_1', 'conv4_1', 'conv5_1']
+        self.style_weights = {'conv1_1': 1.0,
+                              'conv2_1': 0.8,
+                              'conv3_1': 0.5,
+                              'conv4_1': 0.3,
+                              'conv5_1': 0.1}
 
     def forward(self, x):
         layers = {'0': 'conv1_1',
