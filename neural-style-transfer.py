@@ -33,6 +33,7 @@ def main(epochs, alpha, beta, style_image, content_image, target_image, disable_
     style_features = model.forward(style_tensor)
     content_features = model.forward(content_tensor)
 
+    target_tensor.requires_grad_(True)
     optimizer = torch.optim.Adam([target_tensor], lr=0.003)
 
     gram_style_matrix = {k: gram_matrix(v) for k, v in style_features.items()}
@@ -52,7 +53,7 @@ def main(epochs, alpha, beta, style_image, content_image, target_image, disable_
 
         total_loss = alpha * content_loss + beta * style_loss
         optimizer.zero_grad()
-        total_loss.backward(retain_graph=True)
+        total_loss.backward()
         optimizer.step()
 
     save_image(target_tensor, target_image)
@@ -109,7 +110,7 @@ def load_image(path, size=None, device='cpu'):
                                                          (0.229, 0.224, 0.225))])
 
     tensor = transform(image).unsqueeze(0)
-    tensor = tensor.to(device).requires_grad_(True)
+    tensor = tensor.to(device)
 
     return tensor
 
