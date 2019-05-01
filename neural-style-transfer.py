@@ -32,7 +32,7 @@ def main(epochs, alpha, beta, style_image, content_image, target_image):
 
     optimizer = torch.optim.Adam([target_tensor], lr=0.003)
 
-    for epoch in range(epochs):
+    for epoch in tqdm.tqdm(range(epochs)):
         target_features = model.forward(target_tensor)
 
         content_loss = 0
