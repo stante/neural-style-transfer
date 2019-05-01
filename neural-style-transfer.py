@@ -1,6 +1,6 @@
 from model import NeuralStyleTransfer
 import click
-import tqdm
+from tqdm import tqdm
 import os
 import torch
 from PIL import Image
@@ -32,7 +32,7 @@ def main(epochs, alpha, beta, style_image, content_image, target_image):
 
     optimizer = torch.optim.Adam([target_tensor], lr=0.003)
 
-    for epoch in tqdm.tqdm(range(epochs)):
+    for epoch in tqdm(range(epochs), desc='Epochs'):
         target_features = model.forward(target_tensor)
 
         content_loss = 0
