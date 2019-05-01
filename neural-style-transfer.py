@@ -32,10 +32,6 @@ def main(epochs, alpha, beta, style_image, content_image, target_image):
 
     optimizer = torch.optim.Adam([target_tensor], lr=0.003)
 
-    print(content_tensor.shape)
-    print(style_tensor.shape)
-    print(target_tensor.shape)
-
     for epoch in range(epochs):
         target_features = model.forward(target_tensor)
 
@@ -55,12 +51,6 @@ def main(epochs, alpha, beta, style_image, content_image, target_image):
         optimizer.zero_grad()
         total_loss.backward(retain_graph=True)
         optimizer.step()
-
-        if epoch % 1 == 0:
-            print("")
-            print("C: {}".format(content_loss.item()))
-            print("S: {}".format(style_loss.item()))
-            print("T: {}".format(total_loss.item()))
 
     import numpy as np
     target_numpy = target_tensor.squeeze().cpu().detach().numpy()
