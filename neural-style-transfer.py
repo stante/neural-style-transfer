@@ -64,6 +64,7 @@ def main(epochs, alpha, beta, style_image, content_image, target_image, disable_
 
 
 def gram_matrix(tensor):
+    # Remove batch dimension
     tensor = tensor.squeeze()
     matrix = tensor.view(tensor.shape[0], -1)
     gram = torch.mm(matrix, matrix.transpose(0, 1))
@@ -71,13 +72,11 @@ def gram_matrix(tensor):
     return gram
 
 
-#def gram_matrix(tensor):
-#    matrix = tensor.view(tensor.size(1), -1)
-#    return torch.mm(matrix, matrix.t())
-
 def save_image(tensor, path):
     image = tensor.cpu().clone().detach()
+    # Remove batch dimension
     image = image.numpy().squeeze()
+    # Transform from CxWxH to WxHxC
     image = image.transpose(1, 2, 0)
     # Reverse the normalization performed during load_image
     image = image * np.array((0.229, 0.224, 0.225)) + np.array((0.485, 0.456, 0.406))
