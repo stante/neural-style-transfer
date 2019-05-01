@@ -51,21 +51,11 @@ def main(epochs, alpha, beta, style_image, content_image, target_image, disable_
             style_loss += layer_style_loss / (d * w * h)
 
         total_loss = alpha * content_loss + beta * style_loss
-
         optimizer.zero_grad()
         total_loss.backward(retain_graph=True)
         optimizer.step()
 
-    import numpy as np
-    target_numpy = target_tensor.squeeze().cpu().detach().numpy()
-    target_numpy = target_numpy.transpose(1, 2, 0)
-
-    image = target_tensor.to("cpu").clone().detach()
-    image = image.numpy().squeeze()
-    image = image.transpose(1,2,0)
-    image = image * np.array((0.229, 0.224, 0.225)) + np.array((0.485, 0.456, 0.406))
-    image = image.clip(0, 1)
-
+    save_image(target_tensor, target_image)
 
     #print(target_tensor.shape)
     #print(target_numpy.shape)
@@ -73,13 +63,6 @@ def main(epochs, alpha, beta, style_image, content_image, target_image, disable_
     #target_tensor = target_tensor.squeeze().cpu()
     # target_tensor = target_tensor.clip(0, 1)
     #image = transform(target_tensor)
-    import matplotlib.pyplot as plt
-    plt.imshow(image)
-    plt.show()
-
-    image = image * 255
-    image = Image.fromarray(np.asarray(image, dtype=np.uint8), mode='RGB')
-    #image.save(os.path.expanduser(target_image))
 
 
 def gram_matrix(tensor):
@@ -93,6 +76,25 @@ def gram_matrix(tensor):
 #def gram_matrix(tensor):
 #    matrix = tensor.view(tensor.size(1), -1)
 #    return torch.mm(matrix, matrix.t())
+
+def save_image(tensor, path):
+    import numpy as np
+    target_numpy = tensor.squeeze().cpu().detach().numpy()
+    target_numpy = target_numpy.transpose(1, 2, 0)
+
+    image = tensor.to("cpu").clone().detach()
+    image = image.numpy().squeeze()
+    image = image.transpose(1,2,0)
+    image = image * np.array((0.229, 0.224, 0.225)) + np.array((0.485, 0.456, 0.406))
+    image = image.clip(0, 1)
+
+    import matplotlib.pyplot as plt
+    plt.imshow(image)
+    plt.show()
+
+    image = image * 255
+    image = Image.fromarray(np.asarray(image, dtype=np.uint8), mode='RGB')
+    image.save(os.path.expanduser(path))
 
 
 def load_image(path, size=None, device='cpu'):
