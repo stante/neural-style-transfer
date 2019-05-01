@@ -8,25 +8,27 @@ import torchvision.transforms as transforms
 
 
 @click.command()
+@click.option('--disable-cuda')
 @click.option('--epochs', default=2000, help='Number of epochs')
 @click.option('--alpha', default=1, help='Content weight')
 @click.option('--beta', default=1e6, help='Style weight')
 @click.argument('style-image')
 @click.argument('content-image')
 @click.argument('target-image')
-def main(epochs, alpha, beta, style_image, content_image, target_image):
-    device = 'cpu'
-    if torch.cuda.is_available:
+def main(epochs, alpha, beta, style_image, content_image, target_image, disable_cuda):
+
+    if not disable_cuda and torch.cuda.is_available:
         print("Using cuda ", torch.cuda.current_device())
-        device = 'cuda'
+        device = torch.device('cuda')
+    else:
+        device = torch.device('cpu')
 
     model = NeuralStyleTransfer()
     model.to(device)
-    style_tensor = load_image(os.path.expanduser(style_image))
-    style_tensor = style_tensor.to(device)
-    content_tensor = load_image(os.path.expanduser(content_image))
-    content_tensor = content_tensor.to(device)
-    target_tensor = load_image(os.path.expanduser(target_image))
+    content_tensor = load_image(os.path.expanduser(content_image), device=device)
+    size = content_tensor.shape[2:]
+    style_tensor = load_image(os.path.expanduser(style_image), size, device=device)
+    target_tensor = load_image(os.path.expanduser(target_image), size, device=device)
     style_features = model.forward(style_tensor)
     content_features = model.forward(content_tensor)
 
@@ -91,16 +93,19 @@ def gram_matrix(tensor):
 #    return torch.mm(matrix, matrix.t())
 
 
-def load_image(path):
-    transform = transforms.Compose( [transforms.Resize((400, 592)),
-                                     transforms.ToTensor(),
-                                     transforms.Normalize((0.485, 0.456, 0.406),
-                                             (0.229, 0.224, 0.225))])
-
+def load_image(path, size=None, device='cpu'):
     image = Image.open(path).convert('RGB')
+
+    if size is None:
+        size = image.size[::-1]
+
+    transform = transforms.Compose([transforms.Resize(size),
+                                    transforms.ToTensor(),
+                                    transforms.Normalize((0.485, 0.456, 0.406),
+                                                         (0.229, 0.224, 0.225))])
+
     tensor = transform(image).unsqueeze(0)
-    # tensor.unsqueeze_(0)
-    tensor = tensor.to('cuda').requires_grad_(True)
+    tensor = tensor.to(device).requires_grad_(True)
 
     return tensor
 
