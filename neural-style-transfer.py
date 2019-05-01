@@ -8,20 +8,21 @@ import torchvision.transforms as transforms
 
 
 @click.command()
-@click.option('--disable-cuda')
 @click.option('--epochs', default=2000, help='Number of epochs')
 @click.option('--alpha', default=1, help='Content weight')
 @click.option('--beta', default=1e6, help='Style weight')
+@click.option('--disable-cuda', is_flag=True, help='Disables GPU usage')
 @click.argument('style-image')
 @click.argument('content-image')
 @click.argument('target-image')
 def main(epochs, alpha, beta, style_image, content_image, target_image, disable_cuda):
 
     if not disable_cuda and torch.cuda.is_available:
-        print("Using cuda ", torch.cuda.current_device())
         device = torch.device('cuda')
     else:
         device = torch.device('cpu')
+
+    print("Using device: ", device)
 
     model = NeuralStyleTransfer()
     model.to(device)
