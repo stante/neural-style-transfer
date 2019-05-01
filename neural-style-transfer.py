@@ -35,6 +35,8 @@ def main(epochs, alpha, beta, style_image, content_image, target_image, disable_
 
     optimizer = torch.optim.Adam([target_tensor], lr=0.003)
 
+    gram_style_matrix = {k: gram_matrix(v) for k, v in style_features.items()}
+
     for epoch in tqdm(range(epochs), desc='Epochs'):
         target_features = model.forward(target_tensor)
 
@@ -44,9 +46,8 @@ def main(epochs, alpha, beta, style_image, content_image, target_image, disable_
 
         style_loss = 0
         for layer in model.style_layers:
-            # TODO: Optimize gram_matrix call for style_features
             _, d, h, w = target_features[layer].shape
-            layer_style_loss = model.style_weights[layer] * torch.mean((gram_matrix(target_features[layer]) - gram_matrix(style_features[layer]))**2)
+            layer_style_loss = model.style_weights[layer] * torch.mean((gram_matrix(target_features[layer]) - gram_style_matrix[layer])**2)
             style_loss += layer_style_loss / (d * w * h)
 
         total_loss = alpha * content_loss + beta * style_loss
