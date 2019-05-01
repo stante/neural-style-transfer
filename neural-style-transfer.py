@@ -1,10 +1,11 @@
 from model import NeuralStyleTransfer
+import numpy as np
+import torch
+import torchvision.transforms as transforms
+from PIL import Image
 import click
 from tqdm import tqdm
 import os
-import torch
-from PIL import Image
-import torchvision.transforms as transforms
 
 
 @click.command()
@@ -22,12 +23,15 @@ def main(epochs, alpha, beta, style_image, content_image, target_image, disable_
     else:
         device = torch.device('cpu')
 
-    print("Using device: ", device)
+    print("Using device: {}".format(device))
 
     model = NeuralStyleTransfer()
     model.to(device)
     content_tensor = load_image(os.path.expanduser(content_image), device=device)
     size = content_tensor.shape[2:]
+
+    print("Image size: Height: {} - Width: {}".format(size[0], size[1]))
+
     style_tensor = load_image(os.path.expanduser(style_image), size, device=device)
     target_tensor = load_image(os.path.expanduser(target_image), size, device=device)
     style_features = model.forward(style_tensor)
@@ -58,13 +62,6 @@ def main(epochs, alpha, beta, style_image, content_image, target_image, disable_
 
     save_image(target_tensor, target_image)
 
-    #print(target_tensor.shape)
-    #print(target_numpy.shape)
-    #transform = transforms.ToPILImage()
-    #target_tensor = target_tensor.squeeze().cpu()
-    # target_tensor = target_tensor.clip(0, 1)
-    #image = transform(target_tensor)
-
 
 def gram_matrix(tensor):
     tensor = tensor.squeeze()
@@ -79,21 +76,14 @@ def gram_matrix(tensor):
 #    return torch.mm(matrix, matrix.t())
 
 def save_image(tensor, path):
-    import numpy as np
-    target_numpy = tensor.squeeze().cpu().detach().numpy()
-    target_numpy = target_numpy.transpose(1, 2, 0)
-
-    image = tensor.to("cpu").clone().detach()
+    image = tensor.cpu().clone().detach()
     image = image.numpy().squeeze()
-    image = image.transpose(1,2,0)
+    image = image.transpose(1, 2, 0)
+    # Reverse the normalization performed during load_image
     image = image * np.array((0.229, 0.224, 0.225)) + np.array((0.485, 0.456, 0.406))
-    image = image.clip(0, 1)
-
-    import matplotlib.pyplot as plt
-    plt.imshow(image)
-    plt.show()
-
     image = image * 255
+    image = image.clip(0, 255)
+
     image = Image.fromarray(np.asarray(image, dtype=np.uint8), mode='RGB')
     image.save(os.path.expanduser(path))
 
