@@ -34,6 +34,8 @@ Options:
 ```
 
 ## Examples
+The following example was created with `--epochs 5000`.
+
 | Style   | Content | Result|
 | ------- | ------| ----- |
 |![Style](docs/deer_style.jpg)|![Content](docs/dog_content.jpg)|![Style](docs/dog_target.jpg)
