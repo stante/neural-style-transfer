@@ -33,6 +33,11 @@ Options:
   --help            Show this message and exit
 ```
 
+## Examples
+| Style   | Content | Result|
+| ------- | ------| ----- |
+|![Style](docs/deer_style.jpg)|![Content](docs/dog_content.jpg)|![Style](docs/dog_target.jpg)
+
 ## License
 neural-style-transfer is Copyright © 2019 Alexander Stante. It is free software, and may be redistributed under the 
 terms specified in the [LICENSE](/LICENSE) file.
