@@ -1,4 +1,9 @@
 # neural-style-transfer
+This repository contains an implementation of the work presented in the paper 
+ [A Neural Algorithm of Artistic Style](https://arxiv.org/abs/1508.06576) by *Leon A. Gatys, Alexander S. Ecker, 
+ Matthias Bethge*. Based on a style and content image, a new target image is created, which contains the content of the 
+ content image and the style of the style image. The content and style information are extracted from 
+ convolutional layers of a VGG-19 model trained on ImageNet.
 
 ## Installation
 The easiest way to get the provided code running is by creating a python environment based on the provided 
